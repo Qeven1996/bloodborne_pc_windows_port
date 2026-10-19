@@ -2,6 +2,11 @@
 #ifndef BB_WIN32_COMPAT_H
 #define BB_WIN32_COMPAT_H
 #ifdef _WIN32
+/* Windows 10+ APIs used for scheduling and timers (SetProcessInformation,
+ * CREATE_WAITABLE_TIMER_HIGH_RESOLUTION). Must be set before any windows.h. */
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0A00
+#endif
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>

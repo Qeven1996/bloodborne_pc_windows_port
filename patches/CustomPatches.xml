@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Patch>
+    <TitleID>
+        <ID>CUSA00207</ID>
+        <ID>CUSA00208</ID>
+        <ID>CUSA00299</ID>
+        <ID>CUSA00900</ID>
+        <ID>CUSA01363</ID>
+        <ID>CUSA03014</ID>
+        <ID>CUSA03023</ID>
+        <ID>CUSA03173</ID>
+    </TitleID>
+    <Metadata Title="Bloodborne" Name="Restore Debug Menu (READ NOTES)" Author="Whitehawkx, auser1337" Note="This patch requires debug font files, which is available from nexusmods. It will crash without them. Access the menu by pressing left side of touchpad. " PatchVer="1.0" AppVer="01.09" AppElf="eboot.bin" isEnabled="false">
+        <PatchList>
+            <Line Type="bytes" Address="0x136D90D" Value="75"/>
+            <Line Type="bytes" Address="0x2199EEE" Value="488D154318BA0290"/>
+            <Line Type="bytes" Address="0x2199EF8" Value="0DC418"/>
+            <Line Type="bytes" Address="0x2199EFE" Value="89DF9090909031F69090909090E8603D1DFF4C89F790909090EB0D9090"/>
+            <Line Type="bytes" Address="0x2199F23" Value="EBC990"/>
+            <Line Type="bytes" Address="0x23ABEFA" Value="62"/>
+            <Line Type="bytes" Address="0x23ABF07" Value="45"/>
+            <Line Type="bytes" Address="0x2418059" Value="01"/>
+            <Line Type="bytes" Address="0x4D3B738" Value="6100640068006F0063003A002F0066006F006E0074002F0044006200670046006F006E0074003100340068002E00630063006D00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+            <Line Type="bytes" Address="0x4D3B7C1" Value="6100640068006F0063003A002F0066006F006E0074002F0044006200670046006F006E0074003100340068002E007400700066000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+        </PatchList>
+    </Metadata>
+</Patch>

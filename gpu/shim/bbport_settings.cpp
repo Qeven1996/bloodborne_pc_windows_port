@@ -185,6 +185,17 @@ void ConfigureUpscalerSupport(bool fsr4, bool fsr411) {
     }
 }
 
+void ConfigureDlssSupport(bool available, const char* problem) {
+    auto& v = Get();
+    v.dlss_supported = available;
+    v.dlss_problem = (problem && *problem) ? problem : nullptr;
+    if (v.upscaler == UpscalerDlss && !available) {
+        std::printf("Upscaler: DLSS unavailable (%s); falling back to FSR 3.1 before the first frame\n",
+                    v.dlss_problem.load() ? v.dlss_problem.load() : "unknown");
+        v.upscaler = UpscalerFsr3;
+    }
+}
+
 bool FixedRenderSession() {
     const char* size = std::getenv("BB_RENDER_RES");
     return size && size[0];
@@ -254,7 +265,8 @@ const char* PresetName(int preset) {
 }
 
 const char* UpscalerName(int upscaler) {
-    static constexpr const char* names[UpscalerCount] = {"off", "fsr3", "fsr4", "fsr411", "taa"};
+    static constexpr const char* names[UpscalerCount] = {"off",    "fsr3",  "fsr4",
+                                                          "fsr411", "taa",   "dlss"};
     return names[std::clamp(upscaler, 0, UpscalerCount - 1)];
 }
 

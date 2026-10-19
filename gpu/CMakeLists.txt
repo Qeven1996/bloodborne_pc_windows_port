@@ -294,10 +294,15 @@ if (WIN32)
     target_link_libraries(bbport PRIVATE ws2_32 dbghelp ntdll winmm)
     target_link_options(bbport PRIVATE "-Wl,--disable-dynamicbase" "-Wl,--disable-high-entropy-va")
 endif()
-set_target_properties(bbport PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../out")
+# bbport: LTO stays on bbgpu and its static libraries only. The loader references a few
+# symbols (pre_import_hook, restore_guest_fs, ...) from inline assembly, which LTO discards;
+# linking bbport without it keeps the Windows build working while bbgpu keeps the gains.
+set_target_properties(bbport PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../out"
+    INTERPROCEDURAL_OPTIMIZATION OFF)
 
 add_executable(bb-gpu-capabilities ../tools/gpu_capabilities.c)
 target_include_directories(bb-gpu-capabilities PRIVATE .. ../src)
 target_link_libraries(bb-gpu-capabilities PRIVATE Vulkan::Vulkan)
-set_target_properties(bb-gpu-capabilities PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../out")
+set_target_properties(bb-gpu-capabilities PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../out"
+    INTERPROCEDURAL_OPTIMIZATION OFF)
 

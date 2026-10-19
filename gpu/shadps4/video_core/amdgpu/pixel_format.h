@@ -356,7 +356,12 @@ constexpr NumberConversion MapNumberConversion(const NumberFormat num_fmt,
         case DataFormat::Format16_16_16_16:
             return NumberConversion::Sint16ToSnormNz;
         default:
-            UNREACHABLE_MSG("data_fmt = {}", u32(data_fmt));
+            // bbport: ciertos recursos llegan con combinaciones fuera de lo previsto
+            // (p.ej. SnormNz con Format10_11_11 empaquetado en float, que reproduce un
+            // crash determinista al entrar en una zona). Solo 8/16-bit tienen conversion
+            // int->snorm; el resto se pasa sin convertir (igual que los demas casos) en
+            // vez de abortar la sesion.
+            return NumberConversion::None;
         }
     }
     default:
