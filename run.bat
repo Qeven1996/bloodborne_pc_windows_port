@@ -4,6 +4,10 @@ setlocal
 cd /d "%~dp0"
 
 REM Find Python 3
+REM Portable packages ship an embedded interpreter in python\; prefer it so the launcher
+REM works on machines without a system Python. Dev checkouts have no python\ dir and fall
+REM through to the system search below.
+if "%PYTHON%"=="" if exist "%~dp0python\python.exe" set "PYTHON=%~dp0python\python.exe"
 if "%PYTHON%"=="" (
     for %%P in (
         "C:\Program Files\Python313\python.exe"

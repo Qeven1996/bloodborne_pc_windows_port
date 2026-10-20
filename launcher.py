@@ -6,6 +6,7 @@ import locale
 import os
 import queue
 import subprocess
+import sys
 import threading
 import tkinter as tk
 import xml.etree.ElementTree as ET
@@ -13,12 +14,36 @@ from datetime import datetime
 from pathlib import Path
 from tkinter import ttk, filedialog, messagebox
 
-APP_DIR = Path(__file__).resolve().parent
+if getattr(sys, "frozen", False):
+    # PyInstaller onefile: the real files (run.bat, scripts/, patches/, out/) live next to
+    # the executable, not in the temporary extraction dir.
+    APP_DIR = Path(sys.executable).resolve().parent
+else:
+    APP_DIR = Path(__file__).resolve().parent
 RUN_BAT = APP_DIR / "run.bat"
 LOG_FILE = APP_DIR / "launcher.log"
 SETTINGS_FILE = APP_DIR / "launcher_settings.json"
 PATCHES_XML = APP_DIR / "patches" / "Bloodborne.xml"
-DEFAULT_GAME = Path(os.environ.get("BB_GAME_DIR", "../CUSA03173"))
+
+
+def find_game_dir() -> Path:
+    """Scan <APP_DIR>/game/*/ for the first folder holding eboot.bin (the portable layout's
+    single source of truth for the game path). Falls back to a <APP_DIR>/game/<title> hint."""
+    game_root = APP_DIR / "game"
+    if game_root.is_dir():
+        # Prefer any subfolder that actually contains the decrypted eboot.
+        for sub in sorted(game_root.iterdir()):
+            if sub.is_dir() and (sub / "eboot.bin").is_file():
+                return sub
+        # Nothing validated yet: return the first subfolder as a hint, else the root.
+        subs = [s for s in sorted(game_root.iterdir()) if s.is_dir()]
+        if subs:
+            return subs[0]
+        return game_root
+    return game_root
+
+
+DEFAULT_GAME = Path(os.environ.get("BB_GAME_DIR", str(find_game_dir())))
 
 FPS_CHOICES = ["uncap", "60", "90", "30"]
 RES_CHOICES = ["1920x1080 (Native)", "1280x720", "2560x1440", "3840x2160"]
